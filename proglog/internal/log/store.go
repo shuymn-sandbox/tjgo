@@ -88,7 +88,7 @@ func (s *store) ReadAt(p []byte, off int64) (int, error) {
 		return 0, fmt.Errorf("failed to flush: %w", err)
 	}
 	n, err := s.File.ReadAt(p, off)
-	return n, errors.Wrap(err, "failed to read file")
+	return n, errors.WithMessage(err, "failed to read file")
 }
 
 // ファイルを閉じる前にバッファされたデータを永続化
@@ -99,8 +99,5 @@ func (s *store) Close() error {
 	if err != nil {
 		return fmt.Errorf("failed to flush: %w", err)
 	}
-	if err = s.File.Close(); err != nil {
-		return fmt.Errorf("failed to close file: %w", err)
-	}
-	return nil
+	return errors.WithMessage(s.File.Close(), "failed to close file")
 }

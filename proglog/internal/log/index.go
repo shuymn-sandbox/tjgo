@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/pkg/errors"
 	"github.com/tysonmote/gommap"
 )
 
@@ -71,10 +72,7 @@ func (i *index) Close() error {
 		return fmt.Errorf("failed to truncate file: %w", err)
 	}
 	// ファイルを閉じる
-	if err := i.file.Close(); err != nil {
-		return fmt.Errorf("failed to close file: %w", err)
-	}
-	return nil
+	return errors.WithMessage(i.file.Close(), "failed to close file")
 }
 
 // オフセットを受け取り、ストア内の関連するレコードの位置を返す
